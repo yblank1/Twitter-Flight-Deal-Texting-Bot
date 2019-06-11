@@ -2,11 +2,19 @@ import tweepy
 from pprint import pprint
 import json
 import boto3
-from os import getenv
+import os
 import logging
 import time
 import re
 
+CONSUMER_KEY = os.environ['TWITTER_CONSUMER_KEY'].encode('utf-8')
+CONSUMER_SECRET = os.environ['TWITTER_CONSUMER_SECRET'].encode('utf-8')
+ACCESS_TOKEN = os.environ['TWITTER_ACCESS_TOKEN'].encode('utf-8')
+ACCESS_TOKEN_SECRET = os.environ['TWITTER_ACCESS_TOKEN_SECRET'].encode('utf-8')
+
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+AWS_REGION_NAME = os.environ['AWS_REGION_NAME']
 
 class Listener(tweepy.StreamListener):
     def on_status(self, status):
@@ -15,7 +23,6 @@ class Listener(tweepy.StreamListener):
         if 'retweeted_status' not in tweet_data and 'quoted_status' not in tweet_data:
             #  Send sms to topic
             for k in filters:
-
                 if k['regex'].search(status.text):
                     client.publish(
                         TopicArn=k['topic_arn'],
@@ -42,15 +49,11 @@ if __name__ == '__main__':
 
     client = boto3.client(
         "sns",
-        aws_access_key_id=getenv('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=getenv('AWS_SECRET_ACCESS_KEY'),
-        region_name=getenv('AWS_REGION_NAME')
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_REGION_NAME
     )
 
-    CONSUMER_KEY = getenv('TWITTER_CONSUMER_KEY').encode('utf-8')
-    CONSUMER_SECRET = getenv('TWITTER_CONSUMER_SECRET').encode('utf-8')
-    ACCESS_TOKEN = getenv('TWITTER_ACCESS_TOKEN').encode('utf-8')
-    ACCESS_TOKEN_SECRET = getenv('TWITTER_ACCESS_TOKEN_SECRET').encode('utf-8')
 
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)

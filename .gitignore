@@ -1,3 +1,5 @@
+nohup*
+old/
 env_vars
 .idea/
 config.json
