@@ -1,10 +1,10 @@
-import tweepy
 from pprint import pprint
-import json
-import boto3
-import os
 import logging
+import tweepy
+import boto3
+import json
 import time
+import os
 import re
 
 CONSUMER_KEY = os.environ['TWITTER_CONSUMER_KEY'].encode('utf-8')
@@ -15,6 +15,7 @@ ACCESS_TOKEN_SECRET = os.environ['TWITTER_ACCESS_TOKEN_SECRET'].encode('utf-8')
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_REGION_NAME = os.environ['AWS_REGION_NAME']
+
 
 class Listener(tweepy.StreamListener):
     def on_status(self, status):
@@ -28,7 +29,6 @@ class Listener(tweepy.StreamListener):
                         TopicArn=k['topic_arn'],
                         Message=status.text
                     )
-
 
     def on_error(self, status):
         pprint(status)
@@ -44,6 +44,7 @@ if __name__ == '__main__':
     accounts_to_follow = config_data['twitter_account_ids']
     filters = config_data['filters']
 
+    # Create the search string
     for i in filters:
         i['regex'] = re.compile('|'.join(i['search_terms']), re.IGNORECASE)
 
@@ -53,7 +54,6 @@ if __name__ == '__main__':
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         region_name=AWS_REGION_NAME
     )
-
 
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
