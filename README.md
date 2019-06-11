@@ -17,6 +17,28 @@ message instead of simply retweeting, which would require them to install the Tw
 I used Python and the Tweepy library as well as AWS SNS to write this program. I currently have it running on an AWS 
 EC2 instance and it has been working without issue. 
 
+### Creating the filters
+The following is an example of a file: 
+```json
+{
+  "twitter_account_ids": ["352093320", "other_twitter_ids"],
+  "filters": [
+    {
+      "description": "Los Angeles Flight Deal Tweets",
+      "topic_arn": "arn:aws:sns:us-east-1:181202387126:LA_Travel_Deals",
+      "search_terms": ["Los Angeles", "LAX", "Burbank", "BUR", "LGB", "ONT"]
+    }, 
+    {
+      "description": "Some description", 
+      "topic_arn": "Some sns topic arn", 
+      "search_terms": "Terms to search for in tweets"
+    }
+  ]
+}
+```
+Note that the twitter account ids can be easily found at http://gettwitterid.com/.
+
+
 ### Deployment 
 Simply set the following environment variables and run: 
 
