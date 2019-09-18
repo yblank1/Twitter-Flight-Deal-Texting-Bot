@@ -1,4 +1,4 @@
-# Tweet Text Notification Program
+# Twitter Flight Deals to SMS Notification Program
 
 ### Overview
 This program follows specified Twitter accounts and filters live tweets. If those tweets contain certain keywords, the 
